@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "./style.css";
+import Swal from "sweetalert2";
 
 function DataTableHeader({ mode, setMode, setProducts }) {
     const emptyProduct = {
@@ -10,6 +11,13 @@ function DataTableHeader({ mode, setMode, setProducts }) {
         price: ""
     };
 
+    const inputRef = {
+        productName: useRef(),
+        size: useRef(),
+        color: useRef(),
+        price: useRef()
+    };
+
     const [ inputData, setInputData ] = useState({ ...emptyProduct });
 
     const handleInputChange = (e) => {
@@ -17,6 +25,24 @@ function DataTableHeader({ mode, setMode, setProducts }) {
             ...inputData,
             [e.target.name]: e.target.value
         }));
+    }
+
+    const handleInputKeyDown = (e) => {
+        if(e.keyCode === 13) {
+            if(e.target.name === "productName") {
+                inputRef.size.current.focus();
+            }
+            if(e.target.name === "size") {
+                inputRef.color.current.focus();
+            }
+            if(e.target.name === "color") {
+                inputRef.price.current.focus();
+            }
+            if(e.target.name === "price") {
+                handleSubmitClick();
+                inputRef.productName.current.focus();
+            }
+        }
     }
 
     const handleChangeModeClick = (e) => {
@@ -33,6 +59,13 @@ function DataTableHeader({ mode, setMode, setProducts }) {
                         : Math.max.apply(null, productIds);
 
                 return [ ...products, { ...inputData, id: maxId + 1 } ];
+            });
+            Swal.fire({
+                title: "상품 정보 추가 완료",
+                icon: "success",
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2000
             });
         }
         if(mode === 2) {
@@ -63,6 +96,8 @@ function DataTableHeader({ mode, setMode, setProducts }) {
                     value={inputData.productName}
                     placeholder="상품명" 
                     onChange={handleInputChange}
+                    onKeyDown={handleInputKeyDown}
+                    ref={inputRef.productName}
                     autoFocus 
                 />
                 <input 
@@ -72,6 +107,8 @@ function DataTableHeader({ mode, setMode, setProducts }) {
                     value={inputData.size}
                     placeholder="사이즈" 
                     onChange={handleInputChange}
+                    onKeyDown={handleInputKeyDown}
+                    ref={inputRef.size}
                 />
                 <input 
                     type="text" 
@@ -80,6 +117,8 @@ function DataTableHeader({ mode, setMode, setProducts }) {
                     value={inputData.color}
                     placeholder="색상" 
                     onChange={handleInputChange}
+                    onKeyDown={handleInputKeyDown}
+                    ref={inputRef.color}
                 />
                 <input 
                     type="text" 
@@ -88,6 +127,8 @@ function DataTableHeader({ mode, setMode, setProducts }) {
                     value={inputData.price}
                     placeholder="가격" 
                     onChange={handleInputChange}
+                    onKeyDown={handleInputKeyDown}
+                    ref={inputRef.price}
                 />
             </div>
             <div>
