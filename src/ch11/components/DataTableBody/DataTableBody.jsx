@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import "./style.css";
 
-function DataTableBody({ mode, products }) {
+function DataTableBody({ mode, setMode, products, setProducts, isDeleting, setDeleting }) {
     const [ viewProducts, setViewProducts ] = useState([]);
-
     const [ checkedAll, setCheckedAll ] = useState(false);
 
     useEffect(() => {
-        resetViewProducts();
-        setCheckedAll(false);
+        if(mode === 0) {
+            resetViewProducts();
+            setCheckedAll(false);
+        }
     }, [products, mode]);
 
     useEffect(() => {
@@ -19,6 +20,20 @@ function DataTableBody({ mode, products }) {
             setCheckedAll(true);
         }
     }, [viewProducts]);
+
+    useEffect(() => {
+        if(isDeleting) {
+            setProducts([ ...viewProducts
+                .filter(viewProduct => viewProduct.isChecked === false)
+                .map(viewProduct => {
+                    const { isChecked, ...product } = viewProduct;
+                    return product;
+                }) 
+            ]);
+            setMode(0);
+            setDeleting(false);
+        }
+    }, [isDeleting]);
 
     const resetViewProducts = () => {
         setViewProducts([ ...products.map(product => ({...product, isChecked: false})) ]);
@@ -37,8 +52,8 @@ function DataTableBody({ mode, products }) {
 
     const handleCheckedChange = (e) => {
         if(mode === 2) {
-            setViewProducts(viewProducts => {
-                return [ ...viewProducts.map(product => {
+            setViewProducts(viewProducts => [ 
+                ...viewProducts.map(product => {
                     if(product.id === parseInt(e.target.value)) {
                         return {
                             ...product,
@@ -49,8 +64,8 @@ function DataTableBody({ mode, products }) {
                         ...product,
                         isChecked: false
                     }
-                }) ]
-            });
+                }) 
+            ]);
         }
 
         if(mode === 3) {
