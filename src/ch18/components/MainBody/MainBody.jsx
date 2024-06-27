@@ -6,6 +6,7 @@ import HomePage from "../../pages/HomePage/HomePage";
 import ParamsStudyPage from "../../pages/ParamsStudyPage/ParamsStudyPage";
 import SearchParamsStudy from "../../pages/SearchParamsStudyPage/SearchParamsStudy";
 import CustomHookPage from "../../pages/CustomHookPage/CustomHookPage";
+import MemoizationPage from "../../pages/MemoizationPage/MemoizationPage";
 
 function MainBody(props) {
     return (
@@ -16,6 +17,7 @@ function MainBody(props) {
                 <Route path="/params/:name/*" element={<ParamsStudyPage />}/>
                 <Route path="/searchparams" element={<SearchParamsStudy />}/>
                 <Route path="/customhook/:id" element={<CustomHookPage />}/>
+                <Route path="/memoization" element={<MemoizationPage />}/>
             </Routes>
         </div>
     );
